@@ -1,6 +1,7 @@
+import { Error } from 'mongoose';
 import { Request, Response } from 'express';
 import { carSchemaValidation } from './car.validation';
-import { createACartoDB } from './car.service';
+import { createACartoDB, getAllCarsFromDB } from './car.service';
 
 const createCar = async (req: Request, res: Response) => {
   try {
@@ -21,4 +22,27 @@ const createCar = async (req: Request, res: Response) => {
   }
 };
 
-export { createCar };
+const getAllCars = async (req: Request, res: Response) => {
+  try {
+    const { searchTerm } = req.query;
+    // console.log(searchTerm);
+
+    const cars = await getAllCarsFromDB(searchTerm as string);
+    // console.log(cars);
+
+    res.status(200).json({
+      message: 'Cars retrieved successfully',
+      success: true,
+      data: cars,
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      message: 'Car loading failed',
+      success: false,
+      error: error,
+      stack: error.stack,
+    });
+  }
+};
+
+export { createCar, getAllCars };
