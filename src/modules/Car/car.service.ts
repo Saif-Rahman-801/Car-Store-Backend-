@@ -20,4 +20,9 @@ const getAllCarsFromDB = async (searchTerm?: string) => {
   return await Car.find(filter);
 };
 
-export { createACartoDB, getAllCarsFromDB };
+const getSingleCarFromDB = async (carId:string) => {
+    
+    return await Car.findById(carId)
+}
+
+export { createACartoDB, getAllCarsFromDB, getSingleCarFromDB };

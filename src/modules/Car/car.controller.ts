@@ -1,7 +1,11 @@
 import { Error } from 'mongoose';
 import { Request, Response } from 'express';
 import { carSchemaValidation } from './car.validation';
-import { createACartoDB, getAllCarsFromDB } from './car.service';
+import {
+  createACartoDB,
+  getAllCarsFromDB,
+  getSingleCarFromDB,
+} from './car.service';
 
 const createCar = async (req: Request, res: Response) => {
   try {
@@ -45,4 +49,30 @@ const getAllCars = async (req: Request, res: Response) => {
   }
 };
 
-export { createCar, getAllCars };
+const getCarById = async (req: Request, res: Response) => {
+  try {
+    const { carId } = req.params;
+    const result = await getSingleCarFromDB(carId);
+    if (!result) {
+        res.status(404).json({
+          message: 'Car not found;',
+          status: false,
+        });
+      }
+
+    res.status(200).json({
+      message: 'Car retrieved successfully',
+      status: true,
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Error retrieving car',
+      status: false,
+      error: error,
+      stack: error.stack,
+    });
+  }
+};
+
+export { createCar, getAllCars, getCarById };
