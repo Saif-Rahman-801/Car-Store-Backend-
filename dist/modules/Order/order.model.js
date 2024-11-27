@@ -7,5 +7,5 @@ const OrderSchema = new mongoose_1.Schema({
     car: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Car', required: true },
     quantity: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
-});
+}, { timestamps: true });
 exports.Order = (0, mongoose_1.model)('Order', OrderSchema);

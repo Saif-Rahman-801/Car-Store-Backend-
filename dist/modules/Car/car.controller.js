@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCar = exports.getCarById = exports.getAllCars = exports.createCar = void 0;
+exports.deleteCar = exports.updateCar = exports.getCarById = exports.getAllCars = exports.createCar = void 0;
 const car_validation_1 = require("./car.validation");
 const car_service_1 = require("./car.service");
 const createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -27,7 +27,7 @@ const createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             message: 'Car creation failed',
             success: false,
             error: error,
-            stack: error.stack,
+            stack: error instanceof Error ? error.stack : 'car creation failed',
         });
     }
 });
@@ -41,15 +41,16 @@ const getAllCars = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(200).json({
             message: 'Cars retrieved successfully',
             success: true,
+            status: true,
             data: cars,
         });
     }
     catch (error) {
-        res.status(400).json({
-            message: 'Car loading failed',
+        res.status(404).json({
+            message: 'Car loading failed; not found',
             success: false,
-            error: error,
-            stack: error.stack,
+            error: error instanceof Error ? error.message : 'Car not found',
+            stack: error instanceof Error ? error.stack : 'Car not found',
         });
     }
 });
@@ -58,24 +59,22 @@ const getCarById = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { carId } = req.params;
         const result = yield (0, car_service_1.getSingleCarFromDB)(carId);
-        if (!result) {
-            res.status(404).json({
-                message: 'Car not found;',
-                status: false,
-            });
-        }
         res.status(200).json({
             message: 'Car retrieved successfully',
+            success: true,
             status: true,
             data: result,
         });
     }
     catch (error) {
-        res.status(500).json({
+        res.status(404).json({
             message: 'Error retrieving car',
             status: false,
-            error: error,
-            stack: error.stack,
+            success: false,
+            error: error instanceof Error
+                ? error.message
+                : 'Car not found, error finding car',
+            stack: error instanceof Error ? error.stack : 'Car not found',
         });
     }
 });
@@ -88,6 +87,7 @@ const updateCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json({
             message: 'Car updated successfully',
             success: true,
+            status: true,
             data: result,
         });
     }
@@ -95,9 +95,35 @@ const updateCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).json({
             message: 'Car update failed',
             success: false,
-            error: error,
-            stack: error.stack,
+            error: error instanceof Error
+                ? error.message
+                : 'Car update failed because either fake id or wrong info',
+            stack: error instanceof Error ? error.stack : 'Error updating car',
         });
     }
 });
 exports.updateCar = updateCar;
+const deleteCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { carId } = req.params;
+        const result = yield (0, car_service_1.deleteCarInDB)(carId);
+        res.status(200).json({
+            message: 'Car deleted successfully',
+            success: true,
+            status: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        res.status(404).json({
+            message: 'Error deleting car, Car not found',
+            status: false,
+            success: false,
+            error: error instanceof Error ? error.message : 'Error while deleting car',
+            stack: error instanceof Error
+                ? error.stack
+                : 'Error stack: error deleting car',
+        });
+    }
+});
+exports.deleteCar = deleteCar;

@@ -1,13 +1,13 @@
 import { Types } from 'mongoose';
 import { CarType } from './car.interface';
 import { Car } from './car.model';
-import { Response } from 'express';
 
 const createACartoDB = async (carData: CarType) => {
   return await Car.create(carData);
 };
 
 const getAllCarsFromDB = async (searchTerm?: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filter: any = {};
 
   if (searchTerm) {
@@ -39,6 +39,7 @@ const getSingleCarFromDB = async (carId: string) => {
 
 const updateCarInDB = async (
   carId: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateData: Partial<Record<string, any>>,
 ) => {
   if (!Types.ObjectId.isValid(carId)) {

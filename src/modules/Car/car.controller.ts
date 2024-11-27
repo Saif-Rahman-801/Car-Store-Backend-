@@ -20,12 +20,12 @@ const createCar = async (req: Request, res: Response) => {
       success: true,
       data: createdCarData,
     });
-  } catch (error: any) {
+  } catch (error) {
     res.status(400).json({
       message: 'Car creation failed',
       success: false,
       error: error,
-      stack: error.stack,
+      stack: error instanceof Error ? error.stack : 'car creation failed',
     });
   }
 };
@@ -37,7 +37,6 @@ const getAllCars = async (req: Request, res: Response) => {
 
     const cars = await getAllCarsFromDB(searchTerm as string);
     // console.log(cars);
-    
 
     res.status(200).json({
       message: 'Cars retrieved successfully',
@@ -45,12 +44,12 @@ const getAllCars = async (req: Request, res: Response) => {
       status: true,
       data: cars,
     });
-  } catch (error: any) {
+  } catch (error) {
     res.status(404).json({
       message: 'Car loading failed; not found',
       success: false,
-      error: error ? error.message : "Car not found",
-      stack: error.stack,
+      error: error instanceof Error ? error.message : 'Car not found',
+      stack: error instanceof Error ? error.stack : 'Car not found',
     });
   }
 };
@@ -66,20 +65,23 @@ const getCarById = async (req: Request, res: Response) => {
       status: true,
       data: result,
     });
-  } catch (error: any) {
+  } catch (error) {
     res.status(404).json({
       message: 'Error retrieving car',
       status: false,
       success: false,
-      error: error ? error.message : "Car not found, error finding car",
-      stack: error.stack,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Car not found, error finding car',
+      stack: error instanceof Error ? error.stack : 'Car not found',
     });
   }
 };
 
 const updateCar = async (req: Request, res: Response) => {
   try {
-    const { carId } = req.params;    
+    const { carId } = req.params;
 
     const updateCarData = carUpdateSchemaValidation.parse(req.body);
 
@@ -91,14 +93,15 @@ const updateCar = async (req: Request, res: Response) => {
       status: true,
       data: result,
     });
-  } catch (error: any) {
+  } catch (error) {
     res.status(400).json({
       message: 'Car update failed',
       success: false,
-      error: error
-        ? error.message
-        : 'Car update failed because either fake id or wrong info',
-      stack: error.stack,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Car update failed because either fake id or wrong info',
+      stack: error instanceof Error ? error.stack : 'Error updating car',
     });
   }
 };
@@ -114,13 +117,17 @@ const deleteCar = async (req: Request, res: Response) => {
       status: true,
       data: result,
     });
-  } catch (error: any) {
+  } catch (error) {
     res.status(404).json({
       message: 'Error deleting car, Car not found',
       status: false,
       success: false,
-      error: error ? error.message : 'Error while deleting car',
-      stack: error.stack,
+      error:
+        error instanceof Error ? error.message : 'Error while deleting car',
+      stack:
+        error instanceof Error
+          ? error.stack
+          : 'Error stack: error deleting car',
     });
   }
 };

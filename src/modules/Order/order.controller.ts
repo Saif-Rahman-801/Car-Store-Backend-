@@ -14,13 +14,13 @@ const createOrder = async (req: Request, res: Response) => {
       success: true,
       data: orderData,
     });
-  } catch (error: any) {
+  } catch (error) {
     res.status(404).json({
       message: 'Order creation failed',
       status: false,
       success: false,
-      error: error ? error.message : error.stack,
-      stack: error.stack,
+      error: error instanceof Error ? error.message : "Order creation failed",
+      stack: error instanceof Error? error.stack: "Order creation failed",
     });
   }
 };
@@ -35,13 +35,13 @@ const getRevenue = async (req: Request, res: Response) => {
       success: true,
       data: { totalRevenue },
     });
-  } catch (error: any) {
+  } catch (error) {
     res.status(500).json({
       message: 'Failed to calculate revenue',
       status: false,
       success: false,
       error: error,
-      stack: error.stack,
+      stack: error instanceof Error ? error.stack : "Failed to calculate revenue",
     });
   }
 };
