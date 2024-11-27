@@ -80,7 +80,7 @@ The **Car Store** project is a backend server built using **TypeScript**, **Expr
 
 The backend of this project is deployed and accessible at the following link:
 
-**Base URL:** [https://your-api-deployment-link.com](https://your-api-deployment-link.com)
+**Base URL:** [https://car-store-delta-liard.vercel.app/](https://car-store-delta-liard.vercel.app/)
 
 
 ## Endpoints
