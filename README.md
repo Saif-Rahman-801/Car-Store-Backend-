@@ -76,13 +76,6 @@ The **Car Store** project is a backend server built using **TypeScript**, **Expr
 
 ## API
 
-## API Deployment
-
-The backend of this project is deployed and accessible at the following link:
-
-**Base URL:** [https://car-store-delta-liard.vercel.app/](https://car-store-delta-liard.vercel.app/)
-
-
 ## Endpoints
 
 ### 1. **Cars**
@@ -224,6 +217,9 @@ car-store/
 
 The project can be deployed on any Node.js-compatible hosting platform. Ensure the `MONGO_URI` and other environment variables are configured in the hosting environment.
 
+The backend of this project is deployed and accessible at the following link:
+
+**Base URL:** [https://car-store-delta-liard.vercel.app/](https://car-store-delta-liard.vercel.app/)
 ---
 
 ## Author
