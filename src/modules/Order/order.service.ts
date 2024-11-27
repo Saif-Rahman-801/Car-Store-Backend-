@@ -28,4 +28,21 @@ const createOrderIntoDB = async (orderData: OrderData) => {
   return await Order.create({ email, car, quantity, totalPrice });
 };
 
-export { createOrderIntoDB };
+const calculateRevenue = async () => {
+    const result = await Order.aggregate([
+        {
+            $group: {
+                _id: null,
+                totalRevenue: { $sum: { $multiply: ['$totalPrice', '$quantity'] } },
+            }
+        }
+    ])
+
+    // console.log(result);
+
+    return result[0]?.totalRevenue || 0;
+    
+    
+}
+
+export { createOrderIntoDB, calculateRevenue };
