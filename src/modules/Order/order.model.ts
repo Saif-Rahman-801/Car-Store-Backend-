@@ -6,6 +6,6 @@ const OrderSchema: Schema = new Schema<OrderType>({
   car: { type: Schema.Types.ObjectId, ref: 'Car', required: true },
   quantity: { type: Number, required: true },
   totalPrice: { type: Number, required: true },
-});
+},{timestamps: true});
 
 export const Order = model<OrderType>('Order', OrderSchema);
