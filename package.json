@@ -2,13 +2,14 @@
   "name": "car-store",
   "version": "1.0.0",
   "description": "Building a backend server for a Car-Store using TypeScript, Express, Mongoose, MongoDB",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
     "lint": "npx eslint src",
     "lintFix": "npx eslint src --fix",
     "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "start:prod": "nodemon ./dist/server.js",
+    "start:prod": "nodemon dist/server.js",
+    "start": "node dist/server.js",
     "prettier:fix": "npx prettier --write src",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "test": "echo \"Error: no test specified\" && exit 1"

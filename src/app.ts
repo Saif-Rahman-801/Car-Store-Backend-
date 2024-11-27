@@ -13,5 +13,8 @@ app.use(cors());
 app.use('/api/cars', CarRoutes);
 app.use('/api/orders', OrderRoutes);
 
+app.get('/', (req, res) => {
+  res.send('Welcome to the Car Store API!');
+});
 
 export default app;

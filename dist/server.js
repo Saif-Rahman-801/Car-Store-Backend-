@@ -15,14 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 // getting-started.js
 const mongoose_1 = __importDefault(require("mongoose"));
-const config_1 = __importDefault(require("./app/config"));
+// import config from './app/config';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require('dotenv').config();
 // main().catch(err => console.log(err));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield mongoose_1.default.connect(config_1.default.databaseUrl);
-            app_1.default.listen(config_1.default.port, () => {
-                console.log(`Example app listening on port ${config_1.default.port}, DB Connection successful`);
+            yield mongoose_1.default.connect(process.env.DB_URI);
+            app_1.default.listen(process.env.PORT, () => {
+                console.log(`Example app listening on port ${process.env.PORT}, DB Connection successful`);
             });
         }
         catch (error) {
