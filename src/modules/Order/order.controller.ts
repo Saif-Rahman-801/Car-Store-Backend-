@@ -5,6 +5,7 @@ import { calculateRevenue, createOrderIntoDB } from './order.service';
 const createOrder = async (req: Request, res: Response) => {
   try {
     const newOrderData = orderSchemaValidation.parse(req.body);
+
     const orderData = await createOrderIntoDB(newOrderData);
 
     res.status(201).json({
@@ -14,7 +15,7 @@ const createOrder = async (req: Request, res: Response) => {
       data: orderData,
     });
   } catch (error: any) {
-    res.status(400).json({
+    res.status(404).json({
       message: 'Order creation failed',
       status: false,
       success: false,

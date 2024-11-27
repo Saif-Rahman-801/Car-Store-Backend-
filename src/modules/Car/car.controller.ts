@@ -37,6 +37,7 @@ const getAllCars = async (req: Request, res: Response) => {
 
     const cars = await getAllCarsFromDB(searchTerm as string);
     // console.log(cars);
+    
 
     res.status(200).json({
       message: 'Cars retrieved successfully',
@@ -45,10 +46,10 @@ const getAllCars = async (req: Request, res: Response) => {
       data: cars,
     });
   } catch (error: any) {
-    res.status(400).json({
-      message: 'Car loading failed',
+    res.status(404).json({
+      message: 'Car loading failed; not found',
       success: false,
-      error: error,
+      error: error ? error.message : "Car not found",
       stack: error.stack,
     });
   }
@@ -58,12 +59,6 @@ const getCarById = async (req: Request, res: Response) => {
   try {
     const { carId } = req.params;
     const result = await getSingleCarFromDB(carId);
-    if (!result) {
-      res.status(404).json({
-        message: 'Car not found;',
-        status: false,
-      });
-    }
 
     res.status(200).json({
       message: 'Car retrieved successfully',
@@ -72,11 +67,11 @@ const getCarById = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error: any) {
-    res.status(500).json({
+    res.status(404).json({
       message: 'Error retrieving car',
       status: false,
       success: false,
-      error: error,
+      error: error ? error.message : "Car not found, error finding car",
       stack: error.stack,
     });
   }
@@ -84,11 +79,7 @@ const getCarById = async (req: Request, res: Response) => {
 
 const updateCar = async (req: Request, res: Response) => {
   try {
-    const { carId } = req.params;
-    const checkIfCarAvailable = await getSingleCarFromDB(carId);
-    if (!checkIfCarAvailable) {
-      throw new Error('Car is not available');
-    }
+    const { carId } = req.params;    
 
     const updateCarData = carUpdateSchemaValidation.parse(req.body);
 
@@ -115,6 +106,7 @@ const updateCar = async (req: Request, res: Response) => {
 const deleteCar = async (req: Request, res: Response) => {
   try {
     const { carId } = req.params;
+
     const result = await deleteCarInDB(carId);
     res.status(200).json({
       message: 'Car deleted successfully',
@@ -123,8 +115,8 @@ const deleteCar = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error: any) {
-    res.status(500).json({
-      message: 'Error deleting car',
+    res.status(404).json({
+      message: 'Error deleting car, Car not found',
       status: false,
       success: false,
       error: error ? error.message : 'Error while deleting car',

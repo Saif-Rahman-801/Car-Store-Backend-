@@ -19,14 +19,22 @@ const getAllCarsFromDB = async (searchTerm?: string) => {
   }
 
   //   console.log(filter);
-  return await Car.find(filter);
+  const cars = await Car.find(filter);
+  if (cars.length === 0) {
+    throw new Error('Car not found');
+  }
+  return cars
 };
 
 const getSingleCarFromDB = async (carId: string) => {
   if (!Types.ObjectId.isValid(carId)) {
-    throw new Error('Invalid car ID');
+    throw new Error('Invalid car ID; Car not found');
   }
-  return await Car.findById(carId);
+  const car = await Car.findById(carId);
+  if (!car) {
+    throw new Error("Car not found")
+  }
+  return car
 };
 
 const updateCarInDB = async (
@@ -34,7 +42,7 @@ const updateCarInDB = async (
   updateData: Partial<Record<string, any>>,
 ) => {
   if (!Types.ObjectId.isValid(carId)) {
-    throw new Error('Invalid car ID');
+    throw new Error('Invalid car ID; car not found');
   }
 
   const updatedCar = await Car.findByIdAndUpdate(carId, updateData, {
@@ -50,10 +58,20 @@ const updateCarInDB = async (
 
 const deleteCarInDB = async (carID: string) => {
   if (!Types.ObjectId.isValid(carID)) {
-    throw new Error('Invalid Car ID');
+    throw new Error('Invalid Car ID; Car not found');
   }
 
-  return await Car.findByIdAndDelete(carID);
+  const car = await Car.findByIdAndDelete(carID);
+  if (!car) {
+    throw new Error('Car not found');
+  }
+  return car
 };
 
-export { createACartoDB, getAllCarsFromDB, getSingleCarFromDB, updateCarInDB, deleteCarInDB };
+export {
+  createACartoDB,
+  getAllCarsFromDB,
+  getSingleCarFromDB,
+  updateCarInDB,
+  deleteCarInDB,
+};
