@@ -48,4 +48,12 @@ const updateCarInDB = async (
   return updatedCar;
 };
 
-export { createACartoDB, getAllCarsFromDB, getSingleCarFromDB, updateCarInDB };
+const deleteCarInDB = async (carID: string) => {
+  if (!Types.ObjectId.isValid(carID)) {
+    throw new Error('Invalid Car ID');
+  }
+
+  return await Car.findByIdAndDelete(carID);
+};
+
+export { createACartoDB, getAllCarsFromDB, getSingleCarFromDB, updateCarInDB, deleteCarInDB };

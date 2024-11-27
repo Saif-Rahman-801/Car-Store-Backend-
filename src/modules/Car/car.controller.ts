@@ -5,6 +5,7 @@ import {
 } from './car.validation';
 import {
   createACartoDB,
+  deleteCarInDB,
   getAllCarsFromDB,
   getSingleCarFromDB,
   updateCarInDB,
@@ -40,6 +41,7 @@ const getAllCars = async (req: Request, res: Response) => {
     res.status(200).json({
       message: 'Cars retrieved successfully',
       success: true,
+      status: true,
       data: cars,
     });
   } catch (error: any) {
@@ -65,6 +67,7 @@ const getCarById = async (req: Request, res: Response) => {
 
     res.status(200).json({
       message: 'Car retrieved successfully',
+      success: true,
       status: true,
       data: result,
     });
@@ -72,6 +75,7 @@ const getCarById = async (req: Request, res: Response) => {
     res.status(500).json({
       message: 'Error retrieving car',
       status: false,
+      success: false,
       error: error,
       stack: error.stack,
     });
@@ -81,7 +85,11 @@ const getCarById = async (req: Request, res: Response) => {
 const updateCar = async (req: Request, res: Response) => {
   try {
     const { carId } = req.params;
-  
+    const checkIfCarAvailable = await getSingleCarFromDB(carId);
+    if (!checkIfCarAvailable) {
+      throw new Error('Car is not available');
+    }
+
     const updateCarData = carUpdateSchemaValidation.parse(req.body);
 
     const result = await updateCarInDB(carId, updateCarData);
@@ -89,16 +97,40 @@ const updateCar = async (req: Request, res: Response) => {
     res.status(200).json({
       message: 'Car updated successfully',
       success: true,
+      status: true,
       data: result,
     });
   } catch (error: any) {
     res.status(400).json({
       message: 'Car update failed',
       success: false,
-      error: error ? error.message : "Car update failed because either fake id or wrong info",
+      error: error
+        ? error.message
+        : 'Car update failed because either fake id or wrong info',
       stack: error.stack,
     });
   }
 };
 
-export { createCar, getAllCars, getCarById, updateCar };
+const deleteCar = async (req: Request, res: Response) => {
+  try {
+    const { carId } = req.params;
+    const result = await deleteCarInDB(carId);
+    res.status(200).json({
+      message: 'Car deleted successfully',
+      success: true,
+      status: true,
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Error deleting car',
+      status: false,
+      success: false,
+      error: error ? error.message : 'Error while deleting car',
+      stack: error.stack,
+    });
+  }
+};
+
+export { createCar, getAllCars, getCarById, updateCar, deleteCar };
