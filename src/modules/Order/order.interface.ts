@@ -1,15 +1,27 @@
-import { Types } from 'mongoose';
 
-export type OrderType = {
+// export type OrderType = {
+//   email: string;
+//   car: Types.ObjectId;
+//   quantity: number;
+//   totalPrice: number;
+//   status: string;
+// };
+
+import { Document, Types } from "mongoose";
+
+
+export interface IOrder extends Document {
   email: string;
   car: Types.ObjectId;
   quantity: number;
   totalPrice: number;
-};
+  status?: string;
+}
 
-export type OrderData = {
+export interface IOrderInput {
   email: string;
-  car: string;
+  car: string; 
   quantity: number;
   totalPrice: number;
-};
+}
+

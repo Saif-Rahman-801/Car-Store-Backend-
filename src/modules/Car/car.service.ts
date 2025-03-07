@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+/* import { Types } from 'mongoose';
 import { CarType } from './car.interface';
 import { Car } from './car.model';
 
@@ -75,4 +75,44 @@ export {
   getSingleCarFromDB,
   updateCarInDB,
   deleteCarInDB,
+};
+ */
+
+import { CarType } from "./car.interface";
+import { Car } from "./car.model";
+
+
+
+
+
+export const createACartoDB = async (carData: CarType) => {
+  const car = new Car(carData);
+  return await car.save();
+};
+
+export const getAllCarsFromDB = async (searchTerm: string, page: number = 1, limit: number = 10) => {
+  let query = {};
+  if (searchTerm) {
+    query = {
+      $or: [
+        { brand: { $regex: searchTerm, $options: 'i' } },
+        { model: { $regex: searchTerm, $options: 'i' } },
+        { category: { $regex: searchTerm, $options: 'i' } },
+      ],
+    };
+  }
+  const skip = (page - 1) * limit;
+  return await Car.find(query).skip(skip).limit(limit);
+};
+
+export const getSingleCarFromDB = async (carId: string) => {
+  return await Car.findById(carId);
+};
+
+export const updateCarInDB = async (carId: string, updateData: Partial<CarType>) => {
+  return await Car.findByIdAndUpdate(carId, updateData, { new: true });
+};
+
+export const deleteCarInDB = async (carId: string) => {
+  return await Car.findByIdAndDelete(carId);
 };

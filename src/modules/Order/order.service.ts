@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+/* import { Types } from 'mongoose';
 import { OrderData } from './order.interface';
 import { getSingleCarFromDB } from '../Car/car.service';
 import { Order } from './order.model';
@@ -46,3 +46,43 @@ const calculateRevenue = async () => {
 }
 
 export { createOrderIntoDB, calculateRevenue };
+ */
+
+import mongoose from "mongoose";
+import { Car } from "../Car/car.model";
+import { IOrderInput } from "./order.interface";
+import { Order } from "./order.model";
+
+
+
+
+export const createOrderIntoDB = async (orderData: IOrderInput) => {
+  const carId = new mongoose.Types.ObjectId(orderData.car);
+
+  const car = await Car.findById(carId);
+  if (!car) {
+    throw new Error('Car not found');
+  }
+  if (car.quantity < orderData.quantity) {
+    throw new Error('Not enough stock available');
+  }
+  car.quantity = car.quantity - orderData.quantity;
+  if (car.quantity <= 0) {
+    car.inStock = false;
+  }
+  await car.save();
+  
+  const order = new Order({ 
+    email: orderData.email, 
+    car: carId, 
+    quantity: orderData.quantity, 
+    totalPrice: orderData.totalPrice 
+  });
+  return await order.save();
+};
+
+export const calculateRevenue = async () => {
+  const orders = await Order.find({});
+  const totalRevenue = orders.reduce((acc, order) => acc + order.totalPrice, 0);
+  return totalRevenue;
+};

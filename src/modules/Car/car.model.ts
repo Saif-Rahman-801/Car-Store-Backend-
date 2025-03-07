@@ -9,7 +9,7 @@ const CarSchema: Schema = new Schema<CarType>(
     price: { type: Number, required: true },
     category: {
       type: String,
-      enum: ['Sedan', 'SUV', 'Truck', 'Coupe', 'Convertible'],
+      // enum: ['Sedan', 'SUV', 'Truck', 'Coupe', 'Convertible'],
       required: true,
     },
     description: { type: String, required: true },
